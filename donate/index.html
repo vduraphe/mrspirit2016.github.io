@@ -103,9 +103,12 @@
             if (element == true) {
               document.getElementById('success').style.display = '';
               document.getElementById('failure').style.display = 'none';
+              document.getElementById('donateButton').style.display = 'none';
             } else {
               document.getElementById('success').style.display = 'none';
               document.getElementById('failure').style.display = '';
+              document.getElementById('donateButton').value = "Donate";
+              document.getElementById('donateButton').disabled = false;
             }
             element.innerHTML = data.success;
           },

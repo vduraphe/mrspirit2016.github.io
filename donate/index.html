@@ -60,6 +60,10 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script>
+      function capitalize(s) {
+        return s && s[0].toUpperCase() + s.slice(1);
+      }
+
       function setPage() {
         var param = location.search;
         var split_param = param.split("=")
@@ -67,7 +71,7 @@
 
         // set values
         $("#dudeSelect").val(lowercase_name).change();
-        document.getElementById('name').innerHTML = lowercase_name || "Mr. Spirit"
+        document.getElementById('name').innerHTML = capitalize(lowercase_name) || "Mr. Spirit"
       }
 
       window.onload = setPage;

@@ -24,7 +24,7 @@
   <body>
 
     <div class="container">
-      <h1 class="text-center">Support <span id="name">Mr. Spirit</span></h1>
+      <h1 class="text-center">Support <span id="name"></span></h1>
 
       <form id="checkout">
         <div class="form-group">
@@ -58,9 +58,21 @@
       </div>
     </div>
 
-    <script src="https://js.braintreegateway.com/js/braintree-2.23.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script>
+      function setPage() {
+        var param = location.search;
+        var split_param = param.split("=")
+        var lowercase_name = split_param[1]
+
+        // set values
+        $("#dudeSelect").val(lowercase_name).change();
+        document.getElementById('name').innerHTML = lowercase_name || "Mr. Spirit"
+      }
+
+      window.onload = setPage;
+    </script>
+    <script src="https://js.braintreegateway.com/js/braintree-2.23.0.min.js"></script>
     <script>
     var clientToken = "eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiJlODUyZjkxNjZiYTg2MzZiY2RlYjY5YWQ5ODMyZmZiNjU1NjA2ZjNiYmJmMmFkMDMwMzcxNmVlOTM4YjI0NWNmfGNyZWF0ZWRfYXQ9MjAxNi0wNC0xOVQxNjoxOTo0My4wMDc0MDg1ODYrMDAwMFx1MDAyNm1lcmNoYW50X2lkPW5wZHlzemY3Z2Y0eTZycTlcdTAwMjZwdWJsaWNfa2V5PTUzaHAzaHFneWd0bXdjY2ciLCJjb25maWdVcmwiOiJodHRwczovL2FwaS5icmFpbnRyZWVnYXRld2F5LmNvbTo0NDMvbWVyY2hhbnRzL25wZHlzemY3Z2Y0eTZycTkvY2xpZW50X2FwaS92MS9jb25maWd1cmF0aW9uIiwiY2hhbGxlbmdlcyI6W10sImVudmlyb25tZW50IjoicHJvZHVjdGlvbiIsImNsaWVudEFwaVVybCI6Imh0dHBzOi8vYXBpLmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvbnBkeXN6ZjdnZjR5NnJxOS9jbGllbnRfYXBpIiwiYXNzZXRzVXJsIjoiaHR0cHM6Ly9hc3NldHMuYnJhaW50cmVlZ2F0ZXdheS5jb20iLCJhdXRoVXJsIjoiaHR0cHM6Ly9hdXRoLnZlbm1vLmNvbSIsImFuYWx5dGljcyI6eyJ1cmwiOiJodHRwczovL2NsaWVudC1hbmFseXRpY3MuYnJhaW50cmVlZ2F0ZXdheS5jb20vbnBkeXN6ZjdnZjR5NnJxOSJ9LCJ0aHJlZURTZWN1cmVFbmFibGVkIjpmYWxzZSwicGF5cGFsRW5hYmxlZCI6ZmFsc2UsImNvaW5iYXNlRW5hYmxlZCI6ZmFsc2UsIm1lcmNoYW50SWQiOiJucGR5c3pmN2dmNHk2cnE5IiwidmVubW8iOiJvZmYifQ==";
 

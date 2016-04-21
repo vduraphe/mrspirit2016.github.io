@@ -97,11 +97,11 @@
           success: function(data) {
             console.log(data.success);
             var element = document.getElementById("result");
-            if (element == true) {
+            if (element == "true") {
               document.getElementById('success').style.display = '';
               document.getElementById('failure').style.display = 'none';
               document.getElementById('donateButton').style.display = 'none';
-            } else {
+            } else if(element == "false") {
               document.getElementById('success').style.display = 'none';
               document.getElementById('failure').style.display = '';
               document.getElementById('donateButton').value = "Donate";

@@ -87,10 +87,10 @@
         document.getElementById('donateButton').disabled = true;
         
         // Firebase link
-        var firebaseRef = new Firebase("https://mrspirit2016.firebaseio.com/")
+        var firebaseRef = new Firebase("https://mrspirit2016.firebaseio.com/candidates")
         var e = document.getElementById("dudeSelect");
         var cand = e.options[e.selectedIndex].text;
-        var candRef = firebaseRef.child(cand)
+        //var candRef = firebaseRef.child(cand)
         var amountRaised = 0;
         var readSuccess = true
         
@@ -112,10 +112,10 @@
               document.getElementById('donateButton').style.display = 'none';
 
               // Get current amount raised
-              var ref = candRef.child("amountRaised")
+              var ref = firebaseRef.child(cand)
               ref.once("value", function(snapshot) {
-                console.log(snapshot.val());
-                amountRaised = snapshot.val();
+                console.log(snapshot.val().amountRaised);
+                amountRaised = snapshot.val().amountRaised;
               }, function (errorObject) {
                 readSuccess = false
                 console.log("The read failed: " + errorObject.code);
@@ -129,7 +129,6 @@
                 });
               }
               
-
             } else {
               console.log("Not valid")
               document.getElementById('success').style.display = 'none';
@@ -137,7 +136,6 @@
               document.getElementById('donateButton').value = "Donate";
               document.getElementById('donateButton').disabled = false;
             }
-            element.innerHTML = data.success;
           },
           error: function() {
             console.log("there was an error")

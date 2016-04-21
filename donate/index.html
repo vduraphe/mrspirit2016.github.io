@@ -125,7 +125,7 @@
               ref.once("value", function(snapshot) {
                 amountRaised = snapshot.val().amountRaised;
                 console.log(amountRaised)
-                newAmountRaised = Number(amountField) + amountRaised
+                newAmountRaised = Number(amountField.value) + amountRaised
                 console.log(newAmountRaised);
                 // Update Firebase
                 ref.update({

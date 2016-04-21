@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     <title>Mr. Spirit Donation</title>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -14,10 +13,12 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <style>
       #donateButton {
         background-color: #f9A643;
+        border-color: #f9A643;
         color: #ffffff;
       }
     </style>
@@ -57,7 +58,8 @@
           </div>
       </form>
     </div>
-
+    
+    <!-- Page customization and parsing -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script>
       function capitalize(s) {
@@ -76,6 +78,8 @@
 
       window.onload = setPage;
     </script>
+
+    <!--     Braintree and Firebase logging -->
     <script src="https://js.braintreegateway.com/js/braintree-2.23.0.min.js"></script>
     <script>
     var clientToken = "eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiJlODUyZjkxNjZiYTg2MzZiY2RlYjY5YWQ5ODMyZmZiNjU1NjA2ZjNiYmJmMmFkMDMwMzcxNmVlOTM4YjI0NWNmfGNyZWF0ZWRfYXQ9MjAxNi0wNC0xOVQxNjoxOTo0My4wMDc0MDg1ODYrMDAwMFx1MDAyNm1lcmNoYW50X2lkPW5wZHlzemY3Z2Y0eTZycTlcdTAwMjZwdWJsaWNfa2V5PTUzaHAzaHFneWd0bXdjY2ciLCJjb25maWdVcmwiOiJodHRwczovL2FwaS5icmFpbnRyZWVnYXRld2F5LmNvbTo0NDMvbWVyY2hhbnRzL25wZHlzemY3Z2Y0eTZycTkvY2xpZW50X2FwaS92MS9jb25maWd1cmF0aW9uIiwiY2hhbGxlbmdlcyI6W10sImVudmlyb25tZW50IjoicHJvZHVjdGlvbiIsImNsaWVudEFwaVVybCI6Imh0dHBzOi8vYXBpLmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvbnBkeXN6ZjdnZjR5NnJxOS9jbGllbnRfYXBpIiwiYXNzZXRzVXJsIjoiaHR0cHM6Ly9hc3NldHMuYnJhaW50cmVlZ2F0ZXdheS5jb20iLCJhdXRoVXJsIjoiaHR0cHM6Ly9hdXRoLnZlbm1vLmNvbSIsImFuYWx5dGljcyI6eyJ1cmwiOiJodHRwczovL2NsaWVudC1hbmFseXRpY3MuYnJhaW50cmVlZ2F0ZXdheS5jb20vbnBkeXN6ZjdnZjR5NnJxOSJ9LCJ0aHJlZURTZWN1cmVFbmFibGVkIjpmYWxzZSwicGF5cGFsRW5hYmxlZCI6ZmFsc2UsImNvaW5iYXNlRW5hYmxlZCI6ZmFsc2UsIm1lcmNoYW50SWQiOiJucGR5c3pmN2dmNHk2cnE5IiwidmVubW8iOiJvZmYifQ==";
@@ -83,16 +87,21 @@
     braintree.setup(clientToken, "dropin", {
       container: "payment-form",
       onPaymentMethodReceived: function(values) {
-        document.getElementById('donateButton').value = "Please wait...";
-        document.getElementById('donateButton').disabled = true;
+        // Set DOM elements
+        var donateButton = document.getElementById('donateButton');
+        var successAlert = document.getElementById('success');
+        var failureAlert = document.getElementById('failure');
+        var amountField = document.getElementById('amount');
+
+
+        donateButton.value = "Please wait...";
+        ddonateButton.disabled = true;
         
         // Firebase link
         var firebaseRef = new Firebase("https://mrspirit2016.firebaseio.com/candidates")
         var e = document.getElementById("dudeSelect");
         var cand = e.options[e.selectedIndex].text;
-        //var candRef = firebaseRef.child(cand)
         var amountRaised = 0;
-        var readSuccess = true
         
         var requestParams = {
           url: "https://gatnaofft8.execute-api.us-east-1.amazonaws.com/sandbox/checkout",
@@ -101,42 +110,36 @@
           dataType: "json",
           data: JSON.stringify({
               "nonce": values.nonce,
-              "amount": document.getElementById('amount').value
+              "amount": amountField.value
           }),
           success: function(data) {
             console.log(data.success);
             if (data.success) {
               console.log("Valid")
-              document.getElementById('success').style.display = '';
-              document.getElementById('failure').style.display = 'none';
-              document.getElementById('donateButton').style.display = 'none';
+              successAlert.style.display = '';
+              failureAlert.style.display = 'none';
+              donateButton.style.display = 'none';
 
               // Get current amount raised
               var ref = firebaseRef.child(cand)
               ref.once("value", function(snapshot) {
                 amountRaised = snapshot.val().amountRaised;
                 console.log(amountRaised)
-                newAmountRaised = Number(document.getElementById('amount').value) + amountRaised
+                newAmountRaised = Number(amountField) + amountRaised
                 console.log(newAmountRaised);
                 // Update Firebase
                 ref.update({
                   "amountRaised": newAmountRaised
                 });
               }, function (errorObject) {
-                readSuccess = false
                 console.log("The read failed: " + errorObject.code);
               });
-              // // Increase by amount just donated if read was successful
-              // if (readSuccess) {
-                
-              // }
-              
             } else {
               console.log("Not valid")
-              document.getElementById('success').style.display = 'none';
-              document.getElementById('failure').style.display = '';
-              document.getElementById('donateButton').value = "Donate";
-              document.getElementById('donateButton').disabled = false;
+              successAlert.style.display = 'none';
+              failureAlert.style.display = '';
+              donateButton.value = "Donate";
+              donateButton.disabled = false;
             }
           },
           error: function() {

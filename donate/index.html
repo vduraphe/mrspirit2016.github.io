@@ -114,20 +114,22 @@
               // Get current amount raised
               var ref = firebaseRef.child(cand)
               ref.once("value", function(snapshot) {
-                console.log(snapshot.val().amountRaised);
                 amountRaised = snapshot.val().amountRaised;
+                console.log(amountRaised)
+                newAmountRaised = Number(document.getElementById('amount').value) + amountRaised
+                console.log(newAmountRaised);
+                // Update Firebase
+                ref.update({
+                  "amountRaised": newAmountRaised
+                });
               }, function (errorObject) {
                 readSuccess = false
                 console.log("The read failed: " + errorObject.code);
               });
-              // Increase by amount just donated if read was successful
-              if (readSuccess) {
-                amountRaised = document.getElementById('amount').value + amountRaised
-                // Update Firebase
-                ref.update({
-                  "amountRaised": amountRaised
-                });
-              }
+              // // Increase by amount just donated if read was successful
+              // if (readSuccess) {
+                
+              // }
               
             } else {
               console.log("Not valid")

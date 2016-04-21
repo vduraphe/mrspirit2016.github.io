@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     <title>Mr. Spirit Donation</title>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -34,9 +35,9 @@
           <select class="form-control" id="dudeSelect">
             <option value="alec">Alec Garcia</option>
             <option value="andy">Andy Wallace</option>
-            <option value="erik">Erik Solórzano</option>
+            <option value="erik">Erik Solorzano</option>
             <option value="jonathan">Jonathan Stevenson</option>
-            <option value="marc">Marc Castañeda</option>
+            <option value="marc">Marc Castaneda</option>
             <option value="patrick">Patrick Golden</option>
             <option value="payne">Payne Keinarth</option>
             <option value="ryan">Ryan Howell</option>
@@ -44,10 +45,10 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="dudeSelect">Donation Amount (whole dollars only)</label>
+          <label for="amount">Donation Amount</label>
           <div class="input-group">
             <div class="input-group-addon">$</div>
-            <input type="number" class="form-control" id="amount" value="3" placeholder="Amount">
+            <input type="number" class="form-control" id="amount" step='0.01' value='3.00' placeholder='3.00'>
           </div>
         </div>
         <div id="payment-form"></div>
@@ -84,7 +85,15 @@
       onPaymentMethodReceived: function(values) {
         document.getElementById('donateButton').value = "Please wait...";
         document.getElementById('donateButton').disabled = true;
-
+        
+        // Firebase link
+        var firebaseRef = new Firebase("https://mrspirit2016.firebaseio.com/")
+        var e = document.getElementById("dudeSelect");
+        var cand = e.options[e.selectedIndex].text;
+        var candRef = firebaseRef.child(cand)
+        var amountRaised = 0;
+        var readSuccess = true
+        
         var requestParams = {
           url: "https://gatnaofft8.execute-api.us-east-1.amazonaws.com/sandbox/checkout",
           method: "POST",
@@ -101,6 +110,26 @@
               document.getElementById('success').style.display = '';
               document.getElementById('failure').style.display = 'none';
               document.getElementById('donateButton').style.display = 'none';
+
+              // Get current amount raised
+              var ref = candRef.child("amountRaised")
+              ref.once("value", function(snapshot) {
+                console.log(snapshot.val());
+                amountRaised = snapshot.val();
+              }, function (errorObject) {
+                readSuccess = false
+                console.log("The read failed: " + errorObject.code);
+              });
+              // Increase by amount just donated if read was successful
+              if (readSuccess) {
+                amountRaised = document.getElementById('amount').value + amountRaised
+                // Update Firebase
+                ref.update({
+                  "amountRaised": amountRaised
+                });
+              }
+              
+
             } else {
               console.log("Not valid")
               document.getElementById('success').style.display = 'none';
